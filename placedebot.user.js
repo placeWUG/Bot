@@ -28,15 +28,15 @@ let canvas = document.createElement('canvas');
 
 let ccConnection;
 
-(async function () {
+(function () {
 	GM_addStyle(GM_getResourceText('TOASTIFY_CSS'));
 
 	canvas.width = 2000;
 	canvas.height = 1000;
 	canvas = document.body.appendChild(canvas);
 
-	initToken();
-	initServerConnection();
+	void initToken();
+	void initServerConnection();
 })();
 
 async function initToken() {
