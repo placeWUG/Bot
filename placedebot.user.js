@@ -19,7 +19,6 @@
 
 const VERSION = 16;
 
-const TOKEN_URL = 'https://new.reddit.com/r/place/'
 const PLACE_URL = 'https://gql-realtime-2.reddit.com/query';
 const UPDATE_URL = 'https://github.com/placeDE/Bot/raw/main/placedebot.user.js';
 
@@ -28,27 +27,38 @@ let canvas = document.createElement('canvas');
 
 let ccConnection;
 
-(function () {
+(async function () {
 	GM_addStyle(GM_getResourceText('TOASTIFY_CSS'));
 
 	canvas.width = 2000;
 	canvas.height = 2000;
 	canvas = document.body.appendChild(canvas);
 
-	void initToken();
-	void initServerConnection();
+	await new Promise(r => setTimeout(r, 1000));
+
+	await initToken();
+	initServerConnection();
 })();
 
 async function initToken() {
 	// Create AccessToken
 	Toastify({
 		text: 'Abfrage des Zugriffstokens...',
-		duration: 10000
+		duration: 10000,
+		gravity: "bottom",
+		style: {
+			background: '#C6C6C6',
+			color: '#111'
+		},
 	}).showToast();
 	accessToken = await getAccessToken();
 	Toastify({
 		text: 'Zugriffstoken eingesammelt!',
-		duration: 10000
+		duration: 10000,
+		gravity: "bottom",
+		style: {
+			background: '#92E234',
+		},
 	}).showToast();
 }
 
@@ -56,34 +66,58 @@ async function initServerConnection() {
 	// Establish connection to command&control server
 	Toastify({
 		text: 'Verbinde mit dem Kommando-Server...',
-		duration: 10000
+		duration: 10000,
+		gravity: "bottom",
+		style: {
+			background: '#C6C6C6',
+			color: '#111'
+		},
 	}).showToast();
 
 	ccConnection = new WebSocket('wss://placede.ml');
 	ccConnection.onopen = function () {
 		Toastify({
 			text: 'Verbindung zum Server aufgebaut!',
-			duration: 10000
+			duration: 10000,
+			gravity: "bottom",
+			style: {
+				background: '#92E234',
+			},
 		}).showToast();
 
 		// handshake
 		ccConnection.send(JSON.stringify({ "platform": "browser", "version": VERSION }));
+		ccConnection.send("request_pixel");
 	}
 	ccConnection.onerror = function (error) {
 		Toastify({
 			text: 'Verbindung zum Server fehlgeschlagen!',
 			duration: 10000,
+			gravity: "bottom",
 			style: {
-				background: "red",
+				background: '#ED001C',
 			},
 		}).showToast();
 		console.log('WebSocket Error: '+ error);
+	};
+	ccConnection.onclose = function (close) {
+		Toastify({
+			text: 'Verbindung zum Server unterbrochen! Verbinde neu in 10 Sekunden...',
+			duration: 10000,
+			gravity: "bottom",
+			style: {
+				background: '#ED001C',
+			},
+		}).showToast();
+		console.log('WebSocket Close: '+ close.code);
+
+		setTimeout(() => initServerConnection(), 10*1000);
 	};
 	ccConnection.onmessage  = processOperation;
 }
 
 function processOperation(message) {
-	console.log('WebSocket Message received: '+message.data);
+	// console.log('WebSocket Message received: '+message.data);
 	const messageData = JSON.parse(message.data);
 	switch (messageData.operation) {
 		case 'place-pixel':
@@ -100,11 +134,6 @@ async function processOperationPlacePixel(data) {
 	const y = data.y;
 	const color = data.color;
 
-	Toastify({
-		text: `Pixel wird gesetzt auf ${x}, ${y}...`,
-		duration: 10000
-	}).showToast();
-
 	const time = new Date().getTime();
 	let nextAvailablePixelTimestamp = await place(x, y, color) ?? new Date(time + 1000 * 60 * 5 + 1000 * 15)
 
@@ -119,8 +148,12 @@ async function processOperationPlacePixel(data) {
 	const minutes = Math.floor(waitFor / (1000 * 60))
 	const seconds = Math.floor((waitFor / 1000) % 60)
 	Toastify({
-		text: `Warten auf Abklingzeit ${minutes}:${seconds} bis ${new Date(nextAvailablePixelTimestamp).toLocaleTimeString()}`,
-		duration: waitFor
+		text: `Warten auf Abklingzeit ${minutes}m ${seconds}s bis ${new Date(nextAvailablePixelTimestamp).toLocaleTimeString()} Uhr`,
+		duration: waitFor,
+		gravity: "bottom",
+		style: {
+			background: '#FF5700',
+		},
 	}).showToast();
 	setTimeout(setReady, waitFor);
 }
@@ -138,7 +171,7 @@ function setReady() {
 
 
 function getCanvasId(x,y) {
-	return (x <1000) + (y<1000)*2
+	return (x > 1000) + (y > 1000)*2
 }
 /**
  * Places a pixel on the canvas, returns the "nextAvailablePixelTimestamp", if succesfull
@@ -198,20 +231,33 @@ async function place(x, y, color) {
 			'Content-Type': 'application/json'
 		}
 	});
-	console.log(response);
 	const data = await response.json()
 	if (data.errors !== undefined) {
 		Toastify({
-			text: 'Fehler beim Platzieren des Pixels, warte auf Abkühlzeit...',
-			duration: 10000
+			text: 'Fehler beim Platzieren des Pixels, warte auf Abklingzeit...',
+			duration: 10000,
+			gravity: "bottom",
+			style: {
+				background: '#ED001C',
+			},
 		}).showToast();
 		return data.errors[0].extensions?.nextAvailablePixelTs
 	}
+	Toastify({
+		text: `Pixel gesetzt auf ${x}, ${y}`,
+		duration: 10000,
+		gravity: "bottom",
+		style: {
+			background: '#8cb369',
+		},
+	}).showToast();
 	return data?.data?.act?.data?.[0]?.data?.nextAvailablePixelTimestamp
 }
 
 async function getAccessToken() {
-	const response = await fetch(TOKEN_URL);
+	const usingOldReddit = window.location.href.includes('new.reddit.com');
+	const url = usingOldReddit ? 'https://new.reddit.com/r/place/' : 'https://www.reddit.com/r/place/';
+	const response = await fetch(url);
 	const responseText = await response.text();
 
 	// TODO: Make it fancy.
