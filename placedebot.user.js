@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PlaceDE Bot
 // @namespace    https://github.com/PlaceDE/Bot
-// @version      15
+// @version      16
 // @description  /r/place bot
 // @author       NoahvdAa, reckter, SgtChrome, nama17
 // @match        https://www.reddit.com/r/place/*
@@ -21,7 +21,7 @@ var placeOrders = [];
 var accessToken;
 var canvas = document.createElement('canvas');
 
-const VERSION = 15
+const VERSION = 16
 var UPDATE_PENDING = false;
 
 const COLOR_MAPPINGS = {
@@ -192,11 +192,7 @@ function updateOrders() {
 
 
 function getCanvasId(x,y) {
-	if(x <= 999 && y <= 999) return 0
-	if(x > 999 && y <= 999) return 1
-	if(x >= 999 && y > 999) return 2
-	if(x >= 999 && y > 999) return 3
-
+	return (x <1000) + (y<1000)*2
 }
 /**
  * Places a pixel on the canvas, returns the "nextAvailablePixelTimestamp", if succesfull
