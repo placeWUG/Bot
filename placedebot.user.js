@@ -59,7 +59,7 @@ async function initServerConnection() {
 		duration: 10000
 	}).showToast();
 
-	ccConnection = new WebSocket('wss://demo.piesocket.com/v3/channel_1?api_key=oCdCMcMPQpbvNjUIzqtvF1d2X2okWpDQj4AwARJuAgtjhzKxVEjQU6IdCjwm&notify_self')
+	ccConnection = new WebSocket('wss://placede.ml');
 	ccConnection.onopen = function () {
 		Toastify({
 			text: 'Verbindung zum Server aufgebaut!',
@@ -67,7 +67,7 @@ async function initServerConnection() {
 		}).showToast();
 
 		// handshake
-		ccConnection.send(JSON.stringify({ "platform": "python", "version": VERSION }));
+		ccConnection.send(JSON.stringify({ "platform": "browser", "version": VERSION }));
 	}
 	ccConnection.onerror = function (error) {
 		Toastify({
@@ -77,19 +77,20 @@ async function initServerConnection() {
 				background: "red",
 			},
 		}).showToast();
-		console.log('WebSocket Error: '+ error.message);
+		console.log('WebSocket Error: '+ error);
 	};
 	ccConnection.onmessage  = processOperation;
 }
 
 function processOperation(message) {
 	console.log('WebSocket Message received: '+message.data);
-	switch (message.data.operation) {
+	const messageData = JSON.parse(message.data);
+	switch (messageData.operation) {
 		case 'place-pixel':
-			void processOperationPlacePixel(message.data.data);
+			void processOperationPlacePixel(messageData.data);
 			return;
 		case 'notify-update':
-			void processOperationNotifyUpdate(message.data.data);
+			void processOperationNotifyUpdate(messageData.data);
 			return;
 	}
 }
@@ -193,6 +194,7 @@ async function place(x, y, color) {
 			'Content-Type': 'application/json'
 		}
 	});
+	console.log(response);
 	const data = await response.json()
 	if (data.errors !== undefined) {
 		Toastify({
