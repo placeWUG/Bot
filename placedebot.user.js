@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PlaceDE Bot
 // @namespace    https://github.com/PlaceDE/Bot
-// @version      15
+// @version      16
 // @description  /r/place bot
 // @author       NoahvdAa, reckter, SgtChrome, nama17, Kronox
 // @match        https://www.reddit.com/r/place/*
@@ -17,7 +17,7 @@
 
 // Ignore that hideous code. But if it works, it works.
 
-const VERSION = 15;
+const VERSION = 16;
 
 const TOKEN_URL = 'https://new.reddit.com/r/place/'
 const PLACE_URL = 'https://gql-realtime-2.reddit.com/query';
@@ -32,7 +32,7 @@ let ccConnection;
 	GM_addStyle(GM_getResourceText('TOASTIFY_CSS'));
 
 	canvas.width = 2000;
-	canvas.height = 1000;
+	canvas.height = 2000;
 	canvas = document.body.appendChild(canvas);
 
 	void initToken();
@@ -135,6 +135,10 @@ function setReady() {
 	ccConnection.send("request_pixel");
 }
 
+
+function getCanvasId(x,y) {
+	return (x <1000) + (y<1000)*2
+}
 /**
  * Places a pixel on the canvas, returns the "nextAvailablePixelTimestamp", if succesfull
  * @param x
@@ -156,7 +160,7 @@ async function place(x, y, color) {
 							'y': y % 1000
 						},
 						'colorIndex': color,
-						'canvasIndex': (x > 999 ? 1 : 0)
+						'canvasIndex': getCanvasId(x,y)
 					}
 				}
 			},
