@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PlaceDE Bot
 // @namespace    https://github.com/PlaceDE/Bot
-// @version      16
+// @version      18
 // @description  /r/place bot
 // @author       NoahvdAa, reckter, SgtChrome, nama17, Kronox
 // @match        https://www.reddit.com/r/place/*
@@ -17,7 +17,7 @@
 
 // Ignore that hideous code. But if it works, it works.
 
-const VERSION = 16;
+const VERSION = 18;
 
 const PLACE_URL = 'https://gql-realtime-2.reddit.com/query';
 const UPDATE_URL = 'https://github.com/placeDE/Bot/raw/main/placedebot.user.js';
@@ -86,8 +86,8 @@ async function initServerConnection() {
 		}).showToast();
 
 		// handshake
-		ccConnection.send(JSON.stringify({ "platform": "browser", "version": VERSION }));
-		ccConnection.send("request_pixel");
+		ccConnection.send(JSON.stringify({"operation":"handshake","data":{"platform":"browser","version":VERSION,"useraccounts":1}}));
+		ccConnection.send(JSON.stringify({"operation":"request-pixel"}));
 	}
 	ccConnection.onerror = function (error) {
 		Toastify({
@@ -161,17 +161,21 @@ async function processOperationPlacePixel(data) {
 async function processOperationNotifyUpdate(data) {
 	Toastify({
 		text: `Neue Version verfügbar! Aktulaisiere unter ${UPDATE_URL}`,
-		duration: 10000
+		duration: 10000,
+		gravity: "bottom",
+		style: {
+			background: '#ED001C',
+		},
 	}).showToast();
 }
 
 function setReady() {
-	ccConnection.send("request_pixel");
+	ccConnection.send(JSON.stringify({"operation":"request-pixel"}));
 }
 
 
 function getCanvasId(x,y) {
-	return (x > 1000) + (y > 1000)*2
+	return (x > 1000) + (y > 1000) * 2;
 }
 /**
  * Places a pixel on the canvas, returns the "nextAvailablePixelTimestamp", if succesfull
@@ -244,7 +248,7 @@ async function place(x, y, color) {
 		return data.errors[0].extensions?.nextAvailablePixelTs
 	}
 	Toastify({
-		text: `Pixel gesetzt auf ${x}, ${y}`,
+		text: `Pixel gesetzt auf x:${x} y:${y}`,
 		duration: 10000,
 		gravity: "bottom",
 		style: {
