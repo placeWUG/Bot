@@ -174,7 +174,7 @@ function updateOrders() {
 			}).showToast();
 		}
 
-		if (data?.version < VERSION && !UPDATE_PENDING) {
+		if (data?.version > VERSION && !UPDATE_PENDING) {
 			UPDATE_PENDING = true
 			Toastify({
 				text: `NEUE VERSION VERFÜGBAR! Aktualisiere hier https://github.com/placeDE/Bot/raw/main/placedebot.user.js`,
