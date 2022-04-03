@@ -65,6 +65,9 @@ async function initServerConnection() {
 			text: 'Verbindung zum Server aufgebaut!',
 			duration: 10000
 		}).showToast();
+
+		// handshake
+		ccConnection.send(JSON.stringify({ "platform": "python", "version": VERSION }));
 	}
 	ccConnection.onerror = function (error) {
 		Toastify({
