@@ -192,11 +192,7 @@ function updateOrders() {
 
 
 function getCanvasId(x,y) {
-	if(x <= 999 && y <= 999) return 0
-	if(x > 999 && y <= 999) return 1
-	if(x >= 999 && y > 999) return 2
-	if(x >= 999 && y > 999) return 3
-
+	return (x <1000) + (y<1000)*2
 }
 /**
  * Places a pixel on the canvas, returns the "nextAvailablePixelTimestamp", if succesfull
