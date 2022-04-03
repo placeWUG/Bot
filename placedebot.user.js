@@ -54,7 +54,7 @@ const COLOR_MAPPINGS = {
 (async function () {
 	GM_addStyle(GM_getResourceText('TOASTIFY_CSS'));
 	canvas.width = 2000;
-	canvas.height = 1000;
+	canvas.height = 2000;
 	canvas = document.body.appendChild(canvas);
 
 	Toastify({
@@ -94,6 +94,9 @@ async function attemptPlace() {
 	try {
 		ctx = await getCanvasFromUrl(await getCurrentImageUrl('0'), canvas, 0, 0);
 		ctx = await getCanvasFromUrl(await getCurrentImageUrl('1'), canvas, 1000, 0)
+		ctx = await getCanvasFromUrl(await getCurrentImageUrl('2'), canvas, 0, 1000)
+		ctx = await getCanvasFromUrl(await getCurrentImageUrl('3'), canvas, 1000, 1000)
+
 	} catch (e) {
 		console.warn('Fehler beim Abrufen der Zeichenfläche:', e);
 		Toastify({
@@ -179,6 +182,14 @@ function updateOrders() {
 	}).catch((e) => console.warn('Bestellungen können nicht geladen werden!', e));
 }
 
+
+function getCanvasId(x,y) {
+	if(x <= 999 && y <= 999) return 0
+	if(x > 999 && y <= 999) return 1
+	if(x >= 999 && y > 999) return 2
+	if(x >= 999 && y > 999) return 3
+
+}
 /**
  * Places a pixel on the canvas, returns the "nextAvailablePixelTimestamp", if succesfull
  * @param x
@@ -200,7 +211,7 @@ async function place(x, y, color) {
 							'y': y % 1000
 						},
 						'colorIndex': color,
-						'canvasIndex': (x > 999 ? 1 : 0)
+						'canvasIndex': getCanvasId(x,y)
 					}
 				}
 			},
