@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name         PlaceDE Bot
-// @namespace    https://github.com/PlaceDE/Bot
+// @name         PlaceWUG Bot
+// @namespace    https://github.com/PlaceWUG/Bot
 // @version      18
 // @description  /r/place bot
 // @author       NoahvdAa, reckter, SgtChrome, nama17, Kronox
@@ -9,8 +9,8 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=reddit.com
 // @require	     https://cdn.jsdelivr.net/npm/toastify-js
 // @resource     TOASTIFY_CSS https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css
-// @updateURL    https://github.com/PlaceDE/Bot/raw/main/placedebot.user.js
-// @downloadURL  https://github.com/PlaceDE/Bot/raw/main/placedebot.user.js
+// @updateURL    https://github.com/PlaceWUG/Bot/raw/main/placewugbot.user.js
+// @downloadURL  https://github.com/PlaceWUG/Bot/raw/main/placewugbot.user.js
 // @grant        GM_getResourceText
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -20,7 +20,8 @@
 const VERSION = 18;
 
 const PLACE_URL = 'https://gql-realtime-2.reddit.com/query';
-const UPDATE_URL = 'https://github.com/placeDE/Bot/raw/main/placedebot.user.js';
+const UPDATE_URL = 'https://github.com/placeWUG/Bot/raw/main/placewugbot.user.js';
+const WEBSOCKET_URL 'wss://placewug.ml';
 
 let accessToken;
 let canvas = document.createElement('canvas');
@@ -76,7 +77,7 @@ async function initServerConnection() {
 		},
 	}).showToast();
 
-	ccConnection = new WebSocket('wss://placede.ml');
+	ccConnection = new WebSocket(WEBSOCKET_URL);
 	ccConnection.onopen = function () {
 		Toastify({
 			text: 'Verbindung zum Server aufgebaut!',
