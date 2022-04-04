@@ -10,6 +10,8 @@ Der Bot für PlaceDE! Dieser Bot holt automatisch alle paar Minuten [Pläne](htt
 2. Klicke auf diesen Link: [https://github.com/PlaceDE/Bot/raw/main/placedebot.user.js](https://github.com/PlaceDE/Bot/raw/main/placedebot.user.js). Wenn alles gut geht, bietet Tampermonkey an, ein Benutzerskript zu installieren. Klicke auf **Installieren**.
 3. Lade den **r/place** Tab neu. Wenn alles gut gegangen ist, sollte "Abfrage des Zugriffstokens..." oben rechts auf dem Bildschirm zu sehen sein. Der Bot ist nun aktiv und wird diese Benachrichtigungen oben rechts für laufende Informationen nutzen.
 
+WICHTIG: Sollten anbleibende Verbindungsprobleme zum Server bestehen kann dies an eurem Adblocker etc. liegen!
+
 ## Schwachstellen des Bots
 
 - Der Bot aktualisiert die Cooldown Nachricht nicht, so dass es aussieht als ob noch ein Pixel platziert werden kann. Der Bot hat das Pixel jedoch schon platziert und wartet nun auf den Cooldown.

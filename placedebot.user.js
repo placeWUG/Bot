@@ -27,6 +27,7 @@ let canvas = document.createElement('canvas');
 
 let ccConnection;
 let timeout;
+let onCooldown;
 
 (async function () {
 	GM_addStyle(GM_getResourceText('TOASTIFY_CSS'));
@@ -111,6 +112,16 @@ async function initServerConnection() {
 			},
 		}).showToast();
 		console.log('WebSocket Close: '+ close.code);
+		if (close.code === 1006) {
+			Toastify({
+				text: 'Mögliches Problem mit deinem Adblocker etc.',
+				duration: 30000,
+				gravity: "bottom",
+				style: {
+					background: '#ED001C',
+				},
+			}).showToast();
+		}
 
 		setTimeout(() => initServerConnection(), 10*1000);
 	};
@@ -131,6 +142,8 @@ function processOperation(message) {
 }
 
 async function processOperationPlacePixel(data) {
+	onCooldown = true;
+
 	const x = data.x;
 	const y = data.y;
 	const color = data.color;
@@ -172,9 +185,17 @@ async function processOperationNotifyUpdate(data) {
 
 function setReady() {
 	clearTimeout(timeout);
+	onCooldown = false;
 	ccConnection.send(JSON.stringify({"operation":"request-pixel","user":"browser-script"}));
+	setTimeout(() => checkForIdle(), 60*1000);
 }
 
+function checkForIdle() {
+	// send new request if server didn't answer with job
+	if (!onCooldown) {
+		setReady();
+	}
+}
 
 function getCanvasId(x,y) {
 	return (x > 1000) + (y > 1000) * 2;
