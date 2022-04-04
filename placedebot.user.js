@@ -59,7 +59,7 @@ async function initToken() {
 	}).showToast();
 	accessToken = await getAccessToken();
 	Toastify({
-		text: 'Zugriffstoken eingesammelt!',
+		text: 'Zugriffstoken registriert!',
 		duration: 10000,
 		gravity: "bottom",
 		style: {
