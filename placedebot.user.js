@@ -39,6 +39,11 @@ let timeout;
 
 	await initToken();
 	initServerConnection();
+
+	await new Promise(r => setTimeout(r, 1000));
+	setReady()
+	await new Promise(r => setTimeout(r, 1000));
+	setReady()
 })();
 
 async function initToken() {
@@ -64,7 +69,6 @@ async function initToken() {
 }
 
 async function initServerConnection() {
-	clearTimeout(timeout);
 	// Establish connection to command&control server
 	Toastify({
 		text: 'Verbinde mit dem Kommando-Server...',
@@ -89,7 +93,7 @@ async function initServerConnection() {
 
 		// handshake
 		ccConnection.send(JSON.stringify({"operation":"handshake","data":{"platform":"browser","version":VERSION,"useraccounts":1}}));
-		ccConnection.send(JSON.stringify({"operation":"request-pixel"}));
+		setReady()
 	}
 	ccConnection.onerror = function (error) {
 		Toastify({
@@ -172,6 +176,7 @@ async function processOperationNotifyUpdate(data) {
 }
 
 function setReady() {
+	clearTimeout(timeout);
 	ccConnection.send(JSON.stringify({"operation":"request-pixel"}));
 }
 
