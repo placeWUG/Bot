@@ -26,6 +26,7 @@ let accessToken;
 let canvas = document.createElement('canvas');
 
 let ccConnection;
+let timeout;
 
 (async function () {
 	GM_addStyle(GM_getResourceText('TOASTIFY_CSS'));
@@ -63,6 +64,7 @@ async function initToken() {
 }
 
 async function initServerConnection() {
+	clearTimeout(timeout);
 	// Establish connection to command&control server
 	Toastify({
 		text: 'Verbinde mit dem Kommando-Server...',
@@ -155,7 +157,7 @@ async function processOperationPlacePixel(data) {
 			background: '#FF5700',
 		},
 	}).showToast();
-	setTimeout(setReady, waitFor);
+	timeout = setTimeout(setReady, waitFor);
 }
 
 async function processOperationNotifyUpdate(data) {
