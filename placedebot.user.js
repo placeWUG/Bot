@@ -39,11 +39,6 @@ let timeout;
 
 	await initToken();
 	initServerConnection();
-
-	await new Promise(r => setTimeout(r, 1000));
-	setReady()
-	await new Promise(r => setTimeout(r, 1000));
-	setReady()
 })();
 
 async function initToken() {
@@ -177,7 +172,7 @@ async function processOperationNotifyUpdate(data) {
 
 function setReady() {
 	clearTimeout(timeout);
-	ccConnection.send(JSON.stringify({"operation":"request-pixel"}));
+	ccConnection.send(JSON.stringify({"operation":"request-pixel","user":"browser-script"}));
 }
 
 
@@ -259,7 +254,7 @@ async function place(x, y, color) {
 		duration: 10000,
 		gravity: "bottom",
 		style: {
-			background: '#8cb369',
+			background: '#92E234',
 		},
 	}).showToast();
 	return data?.data?.act?.data?.[0]?.data?.nextAvailablePixelTimestamp
