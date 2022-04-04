@@ -44,7 +44,7 @@ let timeout;
 async function initToken() {
 	// Create AccessToken
 	Toastify({
-		text: 'Abfrage des Zugriffstokens...',
+		text: 'Frage Zugriffstokens an...',
 		duration: 10000,
 		gravity: "bottom",
 		style: {
@@ -54,7 +54,7 @@ async function initToken() {
 	}).showToast();
 	accessToken = await getAccessToken();
 	Toastify({
-		text: 'Zugriffstoken registriert!',
+		text: 'Zugriffstoken erhalten!',
 		duration: 10000,
 		gravity: "bottom",
 		style: {
@@ -149,7 +149,7 @@ async function processOperationPlacePixel(data) {
 	const minutes = Math.floor(waitFor / (1000 * 60))
 	const seconds = Math.floor((waitFor / 1000) % 60)
 	Toastify({
-		text: `Warten auf Abklingzeit ${minutes}m ${seconds}s bis ${new Date(nextAvailablePixelTimestamp).toLocaleTimeString()} Uhr`,
+		text: `Noch ${minutes}m ${seconds}s Abklingzeit bis ${new Date(nextAvailablePixelTimestamp).toLocaleTimeString()} Uhr`,
 		duration: waitFor,
 		gravity: "bottom",
 		style: {
@@ -161,7 +161,7 @@ async function processOperationPlacePixel(data) {
 
 async function processOperationNotifyUpdate(data) {
 	Toastify({
-		text: `Neue Version verfügbar! Aktulaisiere unter ${UPDATE_URL}`,
+		text: `Neue Script-Version verfügbar! Aktulaisiere unter ${UPDATE_URL}`,
 		duration: 10000,
 		gravity: "bottom",
 		style: {
@@ -240,7 +240,7 @@ async function place(x, y, color) {
 	const data = await response.json()
 	if (data.errors !== undefined) {
 		Toastify({
-			text: 'Fehler beim Platzieren des Pixels, warte auf Abklingzeit...',
+			text: 'Pixel konnte nicht plaziert werden, da du noch Abklingzeit hast...',
 			duration: 10000,
 			gravity: "bottom",
 			style: {
@@ -266,6 +266,5 @@ async function getAccessToken() {
 	const response = await fetch(url);
 	const responseText = await response.text();
 
-	// TODO: Make it fancy.
-	return responseText.split('\"accessToken\":\"')[1].split('"')[0];
+	return responseText.match(/"accessToken"\s*:\s*"([\w-]+)"/)[1];
 }
