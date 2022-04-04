@@ -31,6 +31,9 @@ Check that your account is not on cooldown, so the bot can place a pixel as soon
 1. Install the [Tampermonkey (Chrome)](https://www.tampermonkey.net/) or [Violentmonkey (Firefox)](https://addons.mozilla.org/en-US/firefox/addon/violentmonkey/) browser extension.
 2. Click on this link: [https://github.com/PlaceDE/Bot/raw/main/placedebot.user.js](https://github.com/PlaceDE/Bot/raw/main/placedebot.user.js ). If all goes well, Tampermonkey will offer to install a user script. Click **Install**
 3. Reload the **r/place** tab. If all went well, you should see 'Ask for access token...' at the top right of the screen. The bot is now active and will use these notifications at the top right for ongoing information.
+4. In Chrome, browser tabs are put into idle mode when they are no longer visible or in the background / minimized. Solution: in the address bar go to `chrome://discards/`, and toggle auto-discardable so that there is an X for the bot tab, then the tab remains active.
+
+IMPORTANT: If there are persistent connection problems to the server, this may be due to your adblocker, etc.!
 
 ## Bot Weaknesses
 
