@@ -21,7 +21,7 @@ const VERSION = 18;
 
 const PLACE_URL = 'https://gql-realtime-2.reddit.com/query';
 const UPDATE_URL = 'https://github.com/placeWUG/Bot/raw/main/placewugbot.user.js';
-const WEBSOCKET_URL 'wss://placewug.ml';
+const WEBSOCKET_URL 'wss://placede.ml';
 
 let accessToken;
 let canvas = document.createElement('canvas');
